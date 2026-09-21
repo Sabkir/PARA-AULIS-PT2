@@ -9,7 +9,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
- background: linear-gradient(135deg, #0095f8, #6A00C9);
+  background: #fbdfe7;
   font-family: "Trebuchet MS", "Segoe UI", sans-serif;
   overflow-x: hidden;
 }
