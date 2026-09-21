@@ -1,0 +1,244 @@
+/* ===== Base ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+ background: linear-gradient(135deg, #0095f8, #6A00C9);
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  overflow-x: hidden;
+}
+
+/* ===== Título ===== */
+.titulo {
+  text-align: center;
+  padding-top: 28px;
+  color: #e8546c;
+  font-size: clamp(28px, 6vw, 52px);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  padding-left: 20px;
+  padding-right: 20px;
+  letter-spacing: 1px;
+  
+}
+/* ===== Subtítulo ===== */
+.subtitulo {
+  text-align: center;
+  padding-top: 50px;
+  color: #e8546c;
+  font-size: clamp(20px, 4vw, 36px);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  padding-left: 20px;
+  padding-right: 20px;
+  letter-spacing: 7px;
+  animation: latido 1.6s ease-in-out infinite;
+}
+
+@keyframes latido {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+
+/* ===== Contenedor del jardín ===== */
+.jardin {
+  position: relative;
+  width: 100%;
+  height: 25vh;
+  min-height: 100px;
+  margin-top: auto;   /* empuja el jardín hasta abajo de la pantalla */
+}
+
+/* ===== Cada flor ===== */
+.flower {
+  /* --size y --stem vienen del HTML; --k es el factor de escala responsive */
+  --ancho: calc(var(--size) * var(--k));
+  --alto:  calc(var(--stem) * var(--k));
+
+  position: absolute;
+  left: var(--x);
+  bottom: 0;
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;          /* se mece desde la base del tallo */
+  animation: vaiven 4s ease-in-out infinite alternate;
+  animation-delay: calc(var(--d) + 1.2s);
+}
+
+@keyframes vaiven {
+  from { transform: translateX(-50%) rotate(-2deg); }
+  to   { transform: translateX(-50%) rotate(2deg); }
+}
+
+/* ----- Tallo ----- */
+.stem {
+  position: relative;
+  width: calc(12px * var(--k));
+  height: var(--alto);
+  margin: 0 auto;
+  background: #2f8f3e;
+  border: 2px solid #1b1b1b;
+  border-radius: 6px 6px 0 0;
+
+  transform-origin: 50% 100%;
+  animation: crecer 0.7s cubic-bezier(.34, 1.2, .64, 1) backwards;
+  animation-delay: var(--d);
+}
+
+@keyframes crecer {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* ----- Hojas ----- */
+.leaf {
+  position: absolute;
+  width: calc(60px * var(--k));
+  height: calc(34px * var(--k));
+  background: #2f8f3e;
+  border: 2px solid #1b1b1b;
+  border-radius: 0 60% 0 60%;
+
+  animation: abrirHoja 0.5s cubic-bezier(.34, 1.4, .64, 1) backwards;
+}
+
+.leaf.left {
+  left: calc(-58px * var(--k));
+  top: 38%;
+  transform: rotate(14deg);
+  animation-delay: calc(var(--d) + 0.45s);
+}
+
+.leaf.right {
+  right: calc(-58px * var(--k));
+  top: 58%;
+  transform: rotate(-14deg) scaleX(-1);
+  animation-delay: calc(var(--d) + 0.6s);
+}
+
+@keyframes abrirHoja {
+  from { transform: scale(0); }
+}
+
+/* ----- Cabeza de la flor ----- */
+.head {
+  position: absolute;
+  bottom: calc(var(--alto) - var(--ancho) / 2.6);
+  left: 50%;
+  width: var(--ancho);
+  height: var(--ancho);
+  margin-left: calc(var(--ancho) / -2);
+
+  animation: florecer 0.9s cubic-bezier(.3, 1.5, .5, 1) backwards;
+  animation-delay: calc(var(--d) + 0.35s);
+}
+
+@keyframes florecer {
+  0%   { transform: scale(0) rotate(-160deg); opacity: 0; }
+  60%  { transform: scale(1.12) rotate(8deg);  opacity: 1; }
+  100% { transform: scale(1) rotate(0deg);     opacity: 1; }
+}
+
+/* ----- Pétalos ----- */
+.petal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: #f5c33b;
+  border: 2px solid #1b1b1b;
+  border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
+  transform-origin: 50% 100%;
+}
+
+/* anillo exterior: 12 pétalos, uno cada 30° */
+.petal.out {
+  width: 26%;
+  height: 50%;
+  transform: translate(-50%, -100%) rotate(calc(var(--i) * 30deg));
+}
+
+/* anillo interior: 8 pétalos más cortos y desfasados */
+.petal.in {
+  width: 24%;
+  height: 38%;
+  background: #f8d766;
+  transform: translate(-50%, -100%) rotate(calc(var(--i) * 45deg + 22deg));
+}
+
+/* ----- Centro café (aquí va la foto o el gif) ----- */
+.core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 52%;
+  height: 52%;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(circle at 30% 30%, #8a5a2b, #6d4420 70%);
+  border: 3px solid #1b1b1b;
+  border-radius: 50%;
+  overflow: hidden;              /* recorta la imagen en círculo */
+  z-index: 2;                    /* la foto queda encima de los pétalos */
+}
+
+/* la imagen o gif llena el círculo sin deformarse */
+.core img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+
+/* ----- Variantes de tono ----- */
+.flower.t2 .petal.out { background: #f2b52e; }
+.flower.t2 .petal.in  { background: #f6cb55; }
+.flower.t2 .core      { background: radial-gradient(circle at 30% 30%, #9a6733, #7a4d24 70%); }
+
+/* ===== RESPONSIVE =====
+   Todo el jardín se encoge cambiando una sola variable: --k
+   1 = tamaño completo (escritorio). Menos de 1 = más pequeño. */
+
+:root { --k: 1; }
+
+@media (max-width: 1100px) { :root { --k: 0.85; } }
+
+@media (max-width: 900px)  { :root { --k: 0.72; } }
+
+@media (max-width: 700px) {
+  :root { --k: 0.58; }
+  .jardin { height: 58vh; }
+}
+
+@media (max-width: 520px) {
+  :root { --k: 0.46; }
+  .jardin { height: 52vh; min-height: 300px; }
+  .titulo { padding-top: 18px; }
+}
+
+@media (max-width: 380px) {
+  :root { --k: 0.38; }
+  .jardin { min-height: 260px; }
+}
+
+/* Pantallas bajitas (celular acostado) */
+@media (max-height: 500px) {
+  .jardin { height: 70vh; min-height: 220px; }
+  .titulo { padding-top: 10px; font-size: 26px; }
+}
+
+/* Respeta a quien tenga desactivadas las animaciones en su sistema */
+@media (prefers-reduced-motion: reduce) {
+  .titulo,
+  .flower,
+  .stem,
+  .head,
+  .leaf {
+    animation: none !important;
+  }
+}
